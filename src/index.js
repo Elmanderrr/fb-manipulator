@@ -271,7 +271,3 @@ const merger = {
 
 
 merger.init()
-
-
-// TODO
-// update -> submodules checkout to FB and check if FB was merged to origin/develop. If yes, checkout and pull from origin/develop
