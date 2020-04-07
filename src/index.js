@@ -170,10 +170,10 @@ const merger = {
 
         if ( !targetSubmoduleBranch  ) {
             console.log(chalk.magenta(`[${submodule}]`), `FB wasn't found, stay on develop`);
-            simpleGit(process.cwd()).checkout('develop');
+            await simpleGit(process.cwd()).checkout('develop');
         } else if (targetSubmoduleBranch && await this.isTargetBranchExistInDevelop(submodule, targetSubmoduleBranch) && !this.skipMerged) {
             console.log(chalk.magenta(`[${submodule}]`), `Seems like ${targetSubmoduleBranch} is merged to origin/develop, stay on develop`);
-            simpleGit(process.cwd()).checkout('develop');
+            await simpleGit(process.cwd()).checkout('develop');
         } else {
             console.log(chalk.magenta(`[${submodule}]`), `${targetSubmoduleBranch} wasn't merged to origin/develop yet.`);
             console.log(chalk.magenta(`[${submodule}]`), `Checkout to ${targetSubmoduleBranch}`);
