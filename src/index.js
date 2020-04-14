@@ -171,7 +171,7 @@ const merger = {
         if ( !targetSubmoduleBranch  ) {
             console.log(chalk.magenta(`[${submodule}]`), `FB wasn't found, stay on develop`);
             await simpleGit(process.cwd()).checkout('develop');
-        } else if (targetSubmoduleBranch && await this.isTargetBranchExistInDevelop(submodule, targetSubmoduleBranch) && !this.skipMerged) {
+        } else if (targetSubmoduleBranch && await this.isTargetBranchExistInDevelop(targetSubmoduleBranch) && !this.skipMerged) {
             console.log(chalk.magenta(`[${submodule}]`), `Seems like ${targetSubmoduleBranch} is merged to origin/develop, stay on develop`);
             await simpleGit(process.cwd()).checkout('develop');
         } else {
@@ -246,27 +246,21 @@ const merger = {
 
     /**
      *
-     * @param submodule
      * @param checkingBranch
      * @returns {Promise<string>}
      *
      */
-    async isTargetBranchExistInDevelop(submodule, checkingBranch) {
+    async isTargetBranchExistInDevelop(checkingBranch) {
         if ( !checkingBranch ) {
             throw Error(`No checkingBranch was provided.`)
         }
 
-        console.log(chalk.magenta(`[${submodule}]`), `Checkout to ${checkingBranch}`)
-        await simpleGit(process.cwd()).checkout(checkingBranch)
+        const merged = await git.raw(['branch', '--merged', 'develop']);
+        const mergedList = merged.trim().split('\n').map(b => b.trim());
 
-        const lastCommitPromise =  await git.raw(['rev-parse', checkingBranch]);
-        const lastCommitId = lastCommitPromise.trim();
-        const branchContainsCommit = await git.raw(['branch', '--contains', lastCommitId]);
+        console.log(`Check if ${checkingBranch} was merged in develop`);
 
-        console.log(`commitId ${lastCommitId} is exist in follow branches: \n`, branchContainsCommit)
-        console.log(`Check if ${lastCommitId} is exist in develop`);
-
-        return branchContainsCommit.trim().split('\n').find(b => b.includes('develop'))
+        return mergedList.find(b => b === checkingBranch)
     }
 }
 
