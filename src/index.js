@@ -249,6 +249,7 @@ const merger = {
      * @param submodule
      * @param checkingBranch
      * @returns {Promise<string>}
+     *
      */
     async isTargetBranchExistInDevelop(submodule, checkingBranch) {
         if ( !checkingBranch ) {
