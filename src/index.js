@@ -171,7 +171,7 @@ const merger = {
         if ( !targetSubmoduleBranch  ) {
             console.log(chalk.magenta(`[${submodule}]`), `FB wasn't found, stay on develop`);
             await simpleGit(process.cwd()).checkout('develop');
-        } else if (targetSubmoduleBranch && await this.isTargetBranchExistInDevelop(targetSubmoduleBranch) && !this.skipMerged) {
+        } else if (targetSubmoduleBranch && await this.isBranchWasMerged(targetSubmoduleBranch) && !this.skipMerged) {
             console.log(chalk.magenta(`[${submodule}]`), `Seems like ${targetSubmoduleBranch} is merged to origin/develop, stay on develop`);
             await simpleGit(process.cwd()).checkout('develop');
         } else {
@@ -246,21 +246,21 @@ const merger = {
 
     /**
      *
-     * @param checkingBranch
+     * @param branch
      * @returns {Promise<string>}
      *
      */
-    async isTargetBranchExistInDevelop(checkingBranch) {
-        if ( !checkingBranch ) {
-            throw Error(`No checkingBranch was provided.`)
+    async isBranchWasMerged(branch) {
+        if ( !branch ) {
+            throw Error(`No branch was provided.`)
         }
 
         const merged = await git.raw(['branch', '--merged', 'develop']);
         const mergedList = merged.trim().split('\n').map(b => b.trim());
 
-        console.log(`Check if ${checkingBranch} was merged in develop`);
+        console.log(`Check if ${branch} was merged in develop`);
 
-        return mergedList.find(b => b === checkingBranch)
+        return mergedList.find(b => b === branch)
     }
 }
 
