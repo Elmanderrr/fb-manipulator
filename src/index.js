@@ -171,7 +171,7 @@ const merger = {
         if ( !targetSubmoduleBranch  ) {
             console.log(chalk.magenta(`[${submodule}]`), `FB wasn't found, stay on develop`);
             await simpleGit(process.cwd()).checkout('develop');
-        } else if (targetSubmoduleBranch && await this.isBranchWasMerged(targetSubmoduleBranch) && !this.skipMerged) {
+        } else if (targetSubmoduleBranch && await this.isBranchWasMerged(answers.jiraTicket) && !this.skipMerged) {
             console.log(chalk.magenta(`[${submodule}]`), `Seems like ${targetSubmoduleBranch} is merged to origin/develop, stay on develop`);
             await simpleGit(process.cwd()).checkout('develop');
         } else {
@@ -250,19 +250,20 @@ const merger = {
      * @returns {Promise<string>}
      *
      */
-    async isBranchWasMerged(branch) {
-        if ( !branch ) {
+    async isBranchWasMerged(jiraTicker) {
+        if ( !jiraTicker ) {
             throw Error(`No branch was provided.`)
         }
 
-        const merged = await git.raw(['branch', '--merged', 'develop']);
-        const mergedList = merged.trim().split('\n').map(b => b.trim());
+        const merged = await git.raw(['log', '-n 100', 'develop', `--pretty=format:'%d%s'`, '--first-parent']);
+        const mergedList = merged.split('\n');
 
-        console.log(`Check if ${branch} was merged in develop`);
+        console.log(`Check if ${jiraTicker} was merged in develop`);
 
-        return mergedList.find(b => b === branch)
+        return mergedList.find(b => b.includes(jiraTicker))
     }
 }
 
 
 merger.init()
+
