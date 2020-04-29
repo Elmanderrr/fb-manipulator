@@ -255,7 +255,7 @@ const merger = {
             throw Error(`No branch was provided.`)
         }
 
-        const merged = await git.raw(['log', '-n 100', 'develop', `--pretty=format:'%s'`, '--first-parent']);
+        const merged = await simpleGit(process.cwd()).raw(['log', '-n 100', 'develop', `--pretty=format:'%s'`, '--first-parent']);
         const mergedList = merged.split('\n');
 
         console.log(`Check if ${jiraTicker} was merged in develop`);
